@@ -8,6 +8,7 @@ parameters:
   WorkingDirectory: $(System.DefaultWorkingDirectory)'
   ScriptDirectory: eng/common/scripts
   SkipCheckingForChanges: false
+  PushForNoChanges: false
   WhatIfPreference: false
 steps:
 - pwsh: |
@@ -41,7 +42,7 @@ steps:
 
 - task: PowerShell@2
   displayName: Push changes
-  condition: and(succeeded(), ne(variables['HasChanges'], 'false'))
+  condition: and(succeeded(), or(eq(variables['HasChanges'], 'true'), eq(parameters.PushForNoChanges, 'true')))
   inputs:
     pwsh: true
     workingDirectory: ${{ parameters.WorkingDirectory }}
